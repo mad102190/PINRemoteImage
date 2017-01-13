@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.name             = "PINRemoteImage"
   s.version          = "3.0.0-beta.8"
   s.summary          = "A thread safe, performant, feature rich image fetcher"
-  s.homepage         = "https://github.com/pinterest/PINRemoteImage"
+  s.homepage         = "https://github.com/mad102190/PINRemoteImage"
   s.license          = 'Apache 2.0'
   s.author           = { "Garrett Moon" => "garrett@pinterest.com" }
   s.source           = { :git => "https://github.com/mad102190/PINRemoteImage.git", :tag => s.version.to_s }
