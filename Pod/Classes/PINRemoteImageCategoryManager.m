@@ -430,7 +430,7 @@
                     return;
                 }
                 if (result.image) {
-                    [view pin_updateUIWithRemoteImageManagerResult:result];
+                    [view pin_updateUIWithBackgroundImage:result.image animatedImage:nil];
                     
                 }
             };
@@ -460,7 +460,7 @@
                 return;
             }
             
-            [view pin_updateUIWithRemoteImageManagerResult:result];
+            [view pin_updateUIWithBackgroundImage:result.image animatedImage:nil];
             
             if (completion) {
                 completion(result);
