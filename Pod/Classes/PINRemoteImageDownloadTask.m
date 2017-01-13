@@ -11,9 +11,7 @@
 #import "PINRemoteImage.h"
 #import "PINRemoteImageCallbacks.h"
 
-@interface PINRemoteImageDownloadTask () {
-    BOOL _canSetDataTaskPriority;
-}
+@interface PINRemoteImageDownloadTask ()
 
 @end
 
@@ -22,7 +20,7 @@
 - (instancetype)init
 {
     if (self = [super init]) {
-        _canSetDataTaskPriority = [NSURLSessionTask instancesRespondToSelector:@selector(setPriority:)];
+        _numberOfRetries = 0;
     }
     return self;
 }
@@ -55,7 +53,7 @@
     }];
 }
 
-- (void)callProgressImageWithQueue:(dispatch_queue_t)queue withImage:(PINImage *)image
+- (void)callProgressImageWithQueue:(nonnull dispatch_queue_t)queue withImage:(nonnull PINImage *)image renderedImageQuality:(CGFloat)renderedImageQuality
 {
     [self.callbackBlocks enumerateKeysAndObjectsUsingBlock:^(NSUUID *UUID, PINRemoteImageCallbacks *callback, BOOL *stop) {
         if (callback.progressImageBlock != nil) {
@@ -67,12 +65,13 @@
             dispatch_async(queue, ^
             {
                 progressImageBlock([PINRemoteImageManagerResult imageResultWithImage:image
-                                                                       animatedImage:nil
+                                                           alternativeRepresentation:nil
                                                                        requestLength:CACurrentMediaTime() - requestTime
                                                                                error:nil
                                                                           resultType:PINRemoteImageResultTypeProgress
-                                                                                UUID:UUID]);
-            });
+                                                                                UUID:UUID
+                                                                renderedImageQuality:renderedImageQuality]);
+           });
         }
     }];
 }
@@ -92,7 +91,7 @@
 - (void)setPriority:(PINRemoteImageManagerPriority)priority
 {
     [super setPriority:priority];
-    if (_canSetDataTaskPriority) {
+    if (PINNSURLSessionTaskSupportsPriority) {
         self.urlSessionTaskOperation.dataTask.priority = dataTaskPriorityWithImageManagerPriority(priority);
     }
     self.urlSessionTaskOperation.queuePriority = operationPriorityWithImageManagerPriority(priority);
